@@ -1,0 +1,68 @@
+# Per-participant parameter file template.
+#
+# Copy this file to participants/P<NN>.yaml for each volunteer (e.g.
+# participants/P01.yaml) and fill in the fields below after the
+# calibration step described in paper/paper_ral.tex Sec. 5.1
+# ("stressed" placement: 3-4 reach points via the visuo-tactile system).
+#
+# PRIVACY: this file must NOT contain the participant's name, contact
+# details, or any other directly identifying information -- only the
+# anonymized ID and the physical/kinematic parameters needed to
+# reproduce the trial. The name-to-ID mapping is recorded separately, on
+# paper, outside this repository -- never here, never digitally.
+#
+# Because a correctly-filled file carries no identifying information,
+# participants/P*.yaml files ARE synced to this repository (they are not
+# git-ignored). See participants/README.md for the full checklist before
+# adding or committing a new one.
+
+participant_id: "P00"          # anonymized ID only, e.g. "P01".."P12"
+study_arm: "right"             # always "right": the perception pipeline
+                                # currently tracks only the right upper limb
+                                # (see paper_ral.tex Sec. 5.1 and Sec. 4.8,
+                                # "Single-arm (right-arm-only) tracking")
+handedness: "right"            # inclusion criterion: right-handed only,
+                                # so the tracked (right) arm is also dominant
+
+# --- Anthropometry (from calibration) --------------------------------
+# Same field names/units as config/shared_control.yaml's
+# upper_arm_length / forearm_length, so a participant file can override
+# the node's defaults directly.
+anthropometry:
+  upper_arm_length: 0.300       # m, l1 (shoulder-to-elbow)
+  forearm_length: 0.270         # m, l2 (elbow-to-wrist)
+  shoulder_offset: [0.15, -0.35, 0.35]   # m, robot base frame; see
+                                          # closed_loop_sim.SHOULDER_OFFSET
+                                          # for the simulator default this
+                                          # replaces per participant
+
+# --- Joint range of motion (goniometric calibration) ------------------
+# [q_min, q_max] in radians, same order/convention as
+# performance.DEFAULT_JOINT_LIMITS:
+#   q1: shoulder flexion/extension
+#   q2: shoulder abduction/adduction
+#   q3: shoulder internal/external rotation
+#   q4: elbow flexion/extension
+# Fill in from a brief pre-task goniometric assessment; fall back to
+# performance.DEFAULT_JOINT_LIMITS only if a participant-specific
+# measurement could not be taken (note why in `notes` below).
+joint_limits_rad:
+  q1: [-1.05, 3.14]
+  q2: [0.0, 3.14]
+  q3: [-1.57, 1.57]
+  q4: [0.0, 2.53]
+
+# --- Session bookkeeping ----------------------------------------------
+session:
+  date: "YYYY-MM-DD"
+  condition_order: []           # randomized order actually run, e.g.
+                                 # ["A", "B", "F", "A", "B", "E", ...]
+                                 # -- log the REALIZED order, not the plan
+  phases_completed: []          # e.g. ["phase1", "phase2"] ("phase3" optional)
+  operator_initials: ""         # who ran the session (not full name)
+  notes: ""                     # deviations, discomfort reports, equipment
+                                 # issues, anything relevant to later QA --
+                                 # keep this factual/technical; do not write
+                                 # anything here that could describe or
+                                 # identify the participant (see
+                                 # participants/README.md, Privacy, item 1)

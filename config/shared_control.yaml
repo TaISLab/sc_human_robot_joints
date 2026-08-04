@@ -1,0 +1,39 @@
+# Parameters for shared_control_node.py
+#
+# Values below (weights, C_joint_safety, C_manipulability, dt_lookahead)
+# were tuned with sim/tune_gains.py on the "stressed" placement, using a
+# synthetic virtual-user Monte Carlo (see sim/README.md for the full
+# sweep results). They are a REASONABLE STARTING POINT for the real
+# robot session, not a substitute for re-checking with real users:
+#   - joint_safety already improved the minimum joint margin even at low
+#     gains, and kept improving up to weight~16 / C_s~12 (plateau).
+#   - manipulability required much higher gains than initially expected
+#     (weight~24-32 / C_m~24-32) to flip from "worse than baseline" to
+#     "better than baseline" on min-manipulability, time-below-threshold,
+#     and peak joint speed near the low-manipulability zone, all
+#     simultaneously and without degrading tracking error.
+shared_control_node:
+  dt_lookahead: 0.2           # s, lookahead used to predict robot Jacobian
+  v_max: 0.15                 # m/s, EE Cartesian speed cap
+  lpf_alpha: 0.2              # low-pass filter coefficient on v_s
+
+  performance_weights:
+    smoothness: 1.0
+    directness: 1.0
+    joint_safety: 16.0
+    manipulability: 24.0
+
+  C_smoothness: 1.0
+  C_directness: 1.0
+  C_joint_safety: 12.0
+  C_manipulability: 24.0
+
+  upper_arm_length: 0.30      # m, default l1 if not published by sensor system
+  forearm_length: 0.27        # m, default l2 if not published by sensor system
+
+  robot_model_backend: franka_state   # "franka_state" or "kdl"
+
+  path:
+    center: [0.5, 0.0, 0.4]   # m, robot base frame
+    radius: 0.075             # m
+    Ka: 2.0                   # proportional gain to next path goal
